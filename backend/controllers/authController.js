@@ -4,54 +4,70 @@ import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
   try {
+    console.log("🔥 LOGIN BODY:", req.body);
+
     const { email, password } = req.body;
 
-    console.log("LOGIN BODY:", req.body); // DEBUG
+    // ✅ validation
+    if (!email || !password) {
+      return res.status(400).json({
+        msg: "Email or password missing",
+      });
+    }
 
-    // 1. check user
+    // 🔍 find user
     const user = await User.findOne({ email });
 
     if (!user) {
-      res.status(400).json({ message: "User not found" });
+      return res.status(400).json({
+        msg: "User not found",
+      });
     }
 
-    // 2. check password
+    // 🔐 check password
     const isMatch = await bcrypt.compare(password, user.password);
 
-    console.log("PASSWORD MATCH:", isMatch); // DEBUG
+    console.log("PASSWORD MATCH:", isMatch);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res.status(400).json({
+        msg: "Invalid credentials",
+      });
     }
 
-    // 3. check status (optional)
-    if (user.status && user.status === "inactive") {
-      return res.status(403).json({ msg: "User inactive" });
+    // 🔐 check JWT secret
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({
+        msg: "JWT_SECRET missing in .env",
+      });
     }
 
-    // 4. create JWT
+    // 🎟 generate token
     const token = jwt.sign(
       {
         id: user._id,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // 5. response
-    res.json({
+    // ✅ response
+    return res.status(200).json({
       token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
 
   } catch (err) {
-    console.log("LOGIN ERROR:", err);
-    res.status(500).json({ msg: "Server error" });
+    console.log("LOGIN ERROR ❌:", err);
+    return res.status(500).json({
+      msg: "Server error",
+      error: err.message,
+    });
   }
 };
