@@ -10,35 +10,30 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// MIDDLEWARE
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Test route
+// TEST ROUTE
 app.get("/", (req, res) => {
-  res.send("API is running 🚀");
+  res.send("Backend running 🚀");
 });
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+// ROUTES
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
-// Safety checks
-if (!process.env.MONGO_URI) {
-  console.log("❌ MONGO_URI missing in .env");
-  process.exit(1);
-}
-
-const PORT = process.env.PORT || 5000;
-
-// DB + Server
+// DB CONNECT
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB Connected");
+    console.log("MongoDB Connected");
 
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running on http://localhost:${PORT}`)
-    );
+    app.listen(5000, () => {
+      console.log("Server running on http://localhost:5000");
+    });
   })
-  .catch(err => {
-    console.log("❌ DB Connection Error:", err.message);
-  });
+  .catch(err => console.log(err));
