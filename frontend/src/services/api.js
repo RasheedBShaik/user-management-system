@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  // Use localhost if your server says 'localhost'
-  baseURL: "http://localhost:5000/api", 
-  // timeout: 5000, 
+  // REPLACE THE LINK BELOW WITH YOUR ACTUAL RENDER URL
+  baseURL: "https://user-management-system-backend-xxxx.onrender.com/api", 
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,9 +10,10 @@ const API = axios.create({
 
 API.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
-    // Ensure this key matches what you set during Login
     const token = localStorage.getItem("token"); 
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
