@@ -1,22 +1,40 @@
-// 1. DNS FIX (MUST BE AT THE VERY TOP)
+// ==========================
+// 1. DNS FIX (TOP PRIORITY)
+// ==========================
 import dns from "node:dns";
-dns.setServers(["8.8.8.8", "8.8.4.4"]); 
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
+// ==========================
+// 2. IMPORTS
+// ==========================
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import morgan from "morgan";
 
-// Route Imports
+// Routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 
+// ==========================
+// 3. CONFIG
+// ==========================
 dotenv.config();
 const app = express();
 
-// 2. DYNAMIC CORS CONFIGURATION
+// ==========================
+// 4. SECURITY MIDDLEWARE
+// ==========================
+app.use(helmet()); // Secure headers
+app.use(morgan("dev")); // Request logging
+
+// ==========================
+// 5. CORS CONFIG
+// ==========================
 const allowedOrigins = [
   "http://localhost:3000",
   "https://user-management-system-five-alpha.vercel.app",
@@ -25,61 +43,108 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or Postman)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
-        // Log blocked origins to your Render console for debugging
-        console.log("⚠️ CORS Blocked Origin:", origin);
-        return callback(new Error("Not allowed by CORS"));
+        console.log("⚠️ CORS Blocked:", origin);
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// 3. EXPLICIT PREFLIGHT OPTIONS HANDLER
-// This ensures that 'OPTIONS' requests (preflights) always return 200 OK
-app.options(/^(.*)$/, cors());
+// Handle preflight
+app.options("*", cors());
 
-// 4. BODY PARSING (Must be after CORS)
-app.use(express.json());
+// ==========================
+// 6. BODY PARSER
+// ==========================
+app.use(express.json({ limit: "10kb" }));
 
-// 5. ROUTES
+// ==========================
+// 7. ROUTES
+// ==========================
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/customers", customerRoutes);
 
-// 6. UI HEALTH CHECK (Visible at your Render URL)
+// ==========================
+// 8. HEALTH CHECK
+// ==========================
 app.get("/", (req, res) => {
-  res.send({
+  res.status(200).json({
     status: "Backend Live 🚀",
-    database: mongoose.connection.readyState === 1 ? "Connected ✅" : "Disconnected ❌",
-    timestamp: new Date().toISOString()
+    database:
+      mongoose.connection.readyState === 1
+        ? "Connected ✅"
+        : "Disconnected ❌",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
 
-// 7. PORT BINDING (Render assigns a dynamic port via process.env.PORT)
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server locked and loaded on port ${PORT}`);
+// ==========================
+// 9. ERROR HANDLER (GLOBAL)
+// ==========================
+app.use((err, req, res, next) => {
+  console.error("❌ ERROR:", err.message);
+
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
 });
 
-// 8. DATABASE CONNECTION
-const MONGO_URI = process.env.MONGO_URI;
+// ==========================
+// 10. ENV VALIDATION
+// ==========================
+const requiredEnv = ["MONGO_URI"];
+requiredEnv.forEach((key) => {
+  if (!process.env[key]) {
+    console.error(`❌ Missing ENV Variable: ${key}`);
+    process.exit(1);
+  }
+});
 
-if (!MONGO_URI) {
-  console.error("❌ ERROR: MONGO_URI is not defined in environment variables!");
-} else {
-  mongoose
-    .connect(MONGO_URI)
-    .then(() => console.log("✅ MongoDB Connected Successfully"))
-    .catch((err) => {
-      console.error("❌ MongoDB Connection Failed:", err.message);
+// ==========================
+// 11. DATABASE CONNECTION
+// ==========================
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      autoIndex: true,
     });
-}
+    console.log("✅ MongoDB Connected");
+  } catch (err) {
+    console.error("❌ DB Connection Failed:", err.message);
+    process.exit(1);
+  }
+};
+
+// ==========================
+// 12. SERVER START
+// ==========================
+const PORT = process.env.PORT || 5000;
+
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+};
+
+startServer();
+
+// ==========================
+// 13. GRACEFUL SHUTDOWN
+// ==========================
+process.on("SIGINT", async () => {
+  console.log("🛑 Shutting down...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
