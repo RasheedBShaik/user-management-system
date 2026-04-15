@@ -44,7 +44,7 @@ app.use(
 
 // 3. EXPLICIT PREFLIGHT OPTIONS HANDLER
 // This ensures that 'OPTIONS' requests (preflights) always return 200 OK
-app.options("*", cors());
+app.options(/^(.*)$/, cors());
 
 // 4. BODY PARSING (Must be after CORS)
 app.use(express.json());
