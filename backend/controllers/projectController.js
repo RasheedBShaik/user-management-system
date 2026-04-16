@@ -10,10 +10,10 @@ export const updateProject = async (req, res) => {
     }
 
     // 2. SAFE PERMISSION CHECK
-    // Ensure we handle cases where teamLead might be a populated object or a simple ID
-    const currentLeadId = project.teamLead._id ? project.teamLead._id.toString() : project.teamLead.toString();
-    const requesterId = req.user?.id || req.user?._id; // Handle different passport/jwt naming
-    
+    // Extract the ID string safely regardless of whether it's populated or not
+    const currentLeadId = project.teamLead?._id?.toString() || project.teamLead?.toString();
+    const requesterId = req.user?.id || req.user?._id;
+
     const isCurrentLead = currentLeadId === requesterId;
     const isAdmin = req.user?.role === 'admin';
 
@@ -23,17 +23,23 @@ export const updateProject = async (req, res) => {
       });
     }
 
-    // 3. CLEAN THE DATA BEFORE UPDATE
-    // If teamLead was sent as an object from frontend, convert to ID string
-    const sanitizedLead = teamLead?._id || teamLead;
+    // 3. SANITIZE DATA (The "500 Error" Fix)
+    // Mongoose will crash if 'member' is an object instead of a string ID.
+    const sanitizedTeam = team ? team.map(t => ({
+      member: t.member?._id || t.member, // Ensure we only save the ID string
+      module: t.module,
+      role: t.role
+    })) : project.team;
 
-    // 4. UPDATE DATA
+    const sanitizedLead = teamLead?._id || teamLead || project.teamLead;
+
+    // 4. PERFORM UPDATE
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,
       { 
-        projectName, 
+        projectName: projectName || project.projectName, 
         teamLead: sanitizedLead, 
-        team 
+        team: sanitizedTeam 
       },
       { new: true, runValidators: true }
     )
@@ -42,8 +48,11 @@ export const updateProject = async (req, res) => {
 
     res.json(updatedProject);
   } catch (error) {
-    console.error("Update Error:", error);
-    // Returning the actual error message helps you debug in the browser console
-    res.status(500).json({ message: "Server Error", details: error.message });
+    console.error("Backend Update Error:", error);
+    // This sends the specific Mongoose error back to your frontend so you can see it
+    res.status(500).json({ 
+      message: "Internal Server Error", 
+      error: error.message 
+    });
   }
 };
