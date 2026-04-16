@@ -2,102 +2,131 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ShieldCheck, Users, Zap, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState<any>(null);
-
-  // 🔐 Load session
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-
-      // auto redirect based on role (optional UX upgrade)
-      if (parsed.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/user");
+      try {
+        const parsed = JSON.parse(storedUser);
+        // Only auto-redirect if a valid session exists
+        if (parsed.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/user");
+        }
+      } catch (error) {
+        console.error("Session error", error);
+        setLoading(false);
       }
+    } else {
+      // No user found, stay on landing page
+      setLoading(false);
     }
   }, [router]);
 
+  // Loading state with a subtle spinner to prevent content flash
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-6">
-
-      {/* HERO SECTION */}
-      <div className="text-center max-w-2xl">
-
-        <h1 className="text-5xl font-bold text-green-400 mb-4">
-          User Management System 👥
-        </h1>
-
-        <p className="text-gray-400 text-lg">
-          A secure role-based authentication system built with
-          <span className="text-blue-400"> MERN Stack</span>
-        </p>
-
+    <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-blue-500/30">
+      {/* Background Ambient Glow */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px]" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-green-900/10 blur-[120px]" />
       </div>
 
-      {/* ACTION BUTTONS */}
-      <div className="mt-10 flex gap-4">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-20">
+        
+        {/* HERO SECTION */}
+        <div className="text-center max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-6 animate-fade-in">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            v2.0 Full-Stack Auth Ready
+          </div>
 
-        <button
-          onClick={() => router.push("/login")}
-          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded transition hover:cursor-pointer"
-        >
-          Login
-        </button>
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-linear-to-b from-white to-gray-400">
+            Manage Users with <br />
+            <span className="text-blue-500">Total Confidence.</span>
+          </h1>
 
-        <button
-          onClick={() => router.push("/register")}
-          className="bg-gray-800 hover:bg-gray-700 px-6 py-2 rounded transition border border-gray-700 hover:cursor-pointer"
-        >
-          Register
-        </button>
-
-      </div>
-
-      {/* FEATURES */}
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
-
-        <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
-          <h3 className="text-green-400 font-bold mb-2">
-            🔐 Secure Auth
-          </h3>
-          <p className="text-gray-400 text-sm">
-            JWT-based authentication with bcrypt password encryption.
+          <p className="text-gray-400 text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
+            A production-ready <span className="text-white font-medium">MERN</span> template 
+            featuring role-based access control, JWT security, and seamless UX.
           </p>
         </div>
 
-        <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
-          <h3 className="text-blue-400 font-bold mb-2">
-            👑 Role Based Access
-          </h3>
-          <p className="text-gray-400 text-sm">
-            Admin and user roles with protected routes and permissions.
-          </p>
+        {/* ACTION BUTTONS */}
+        <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <button
+            onClick={() => router.push("/login")}
+            className="group flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-blue-600/20 active:scale-95 cursor-pointer"
+          >
+            Get Started
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={() => router.push("/register")}
+            className="flex items-center justify-center bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-200 backdrop-blur-sm cursor-pointer"
+          >
+            Create Account
+          </button>
         </div>
 
-        <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
-          <h3 className="text-purple-400 font-bold mb-2">
-            ⚡ Full Stack MERN
-          </h3>
-          <p className="text-gray-400 text-sm">
-            MongoDB, Express, React (Next.js), Node.js architecture.
-          </p>
+        {/* FEATURES GRID */}
+        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
+          <FeatureCard 
+            icon={<ShieldCheck className="text-blue-500" />}
+            title="Secure Auth"
+            desc="Stateless authentication using JWT and encrypted HttpOnly cookies."
+          />
+          <FeatureCard 
+            icon={<Users className="text-green-500" />}
+            title="Role Access"
+            desc="Granular permissions for Admins and Standard Users out of the box."
+          />
+          <FeatureCard 
+            icon={<Zap className="text-purple-500" />}
+            title="Next.js Speed"
+            desc="Server-side rendering and optimized routing for blazing fast performance."
+          />
         </div>
 
+        {/* FOOTER */}
+        <footer className="mt-24 text-gray-600 text-sm font-medium">
+          Built with <span className="text-red-900/80">❤️</span> by the MERN Community
+        </footer>
       </div>
+    </div>
+  );
+}
 
-      {/* FOOTER */}
-      <div className="mt-20 text-gray-500 text-sm text-center">
-        Built with ❤️ using MERN Stack
+// Sub-component for UI Consistency
+function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="bg-white/3 p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors group">
+      <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        {icon}
       </div>
-
+      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+      <p className="text-gray-500 text-sm leading-relaxed">
+        {desc}
+      </p>
     </div>
   );
 }

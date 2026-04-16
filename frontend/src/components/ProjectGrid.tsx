@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus, Search, ArrowRight, Calendar, User, Layers, Shield } from "lucide-react";
 
 export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
   const [filter, setFilter] = useState("");
@@ -9,125 +10,191 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
     p.projectName?.toLowerCase().includes(filter.toLowerCase())
   );
 
+  // Helper to determine status styles based on project state
+  const getStatusConfig = (status: string) => {
+    const s = status?.toLowerCase();
+    if (s === "active") {
+      return {
+        bg: "bg-emerald-500/5 text-emerald-500 border-emerald-500/20",
+        dot: "bg-emerald-500 shadow-[0_0_8px_#10b981]",
+        pulse: true
+      };
+    }
+    if(s === "in progress"){
+      return {
+        bg: "bg-blue-500/5 text-blue-500 border-blue-500/20",
+        dot: "bg-blue-500 shadow-[0_0_8px_#10b981]",
+        pulse: true
+      };
+    }
+    if (s === "pending") {
+      return {
+        bg: "bg-amber-500/5 text-amber-500 border-amber-500/20",
+        dot: "bg-amber-500",
+        pulse: false
+      };
+    }
+    if (s === "closed") {
+      return {
+        bg: "bg-red-500/5 text-red-400 border-red-500/20",
+        dot: "bg-red-400",
+        pulse: false
+      };
+    }
+    // Default / Error state
+    return {
+      bg: "bg-red-500/5 text-red-500 border-red-500/20",
+      dot: "bg-red-500",
+      pulse: false
+    };
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Search and Action Bar */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* --- ACTION BAR --- */}
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
         <div className="relative w-full md:w-96 group">
+          <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
           <input
-            placeholder="FILTER_OPERATIONS..."
-            className="w-full bg-transparent border-b border-white/10 p-2 outline-none focus:border-blue-500 font-mono text-xs uppercase text-white transition-all"
+            placeholder="SEARCH Projects..."
+            className="w-full bg-transparent border-b border-white/10 pl-8 pr-2 py-3 outline-none focus:border-blue-500 font-mono text-[10px] tracking-widest uppercase text-white transition-all placeholder:text-gray-700"
             onChange={(e) => setFilter(e.target.value)}
           />
-          <div className="absolute bottom-0 left-0 h-px w-0 bg-blue-500 group-focus-within:w-full transition-all duration-500"></div>
         </div>
 
-        <button
-          onClick={onCreate}
-          className="w-full md:w-auto bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all active:scale-95 text-white"
-        >
-          Initialize New Project
-        </button>
       </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filtered.map((p: any) => (
-          <div
-            key={p._id}
-            onClick={() => onSelect(p)}
-            className="relative group cursor-pointer"
-          >
-            {/* Hover Glow Effect */}
-            <div className="absolute -inset-0.5 bg-linear-to-r from-blue-600 to-cyan-500 rounded-[2.5rem] opacity-0 group-hover:opacity-10 blur-xl transition duration-500"></div>
+      {/* --- GRID --- */}
+      {filtered.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((p: any) => {
+            const statusConfig = getStatusConfig(p.status);
+            
+            return (
+              <div
+                key={p._id}
+                onClick={() => onSelect(p)}
+                className="group relative cursor-pointer list-none"
+              >
+                {/* Outer Glow */}
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600 to-purple-600 rounded-[2.5rem] opacity-0 group-hover:opacity-20 blur-xl transition duration-500"></div>
 
-            <div className="relative bg-[#0b0d11] border border-white/5 p-8 rounded-[2.5rem] backdrop-blur-md group-hover:border-white/20 transition-all h-full flex flex-col shadow-2xl">
-              
-              {/* Top Meta Row */}
-              <div className="flex justify-between items-center mb-6">
-                <span className={`px-3 py-1 rounded-full text-[8px] font-black tracking-widest uppercase ${
-                  p.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 
-                  p.status === 'Pending' ? 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20' : 
-                  'bg-red-500/10 text-red-500 border border-red-500/20'
-                }`}>
-                  {p.status || "UNKNOWN"}
-                </span>
-                <span className="text-[9px] font-mono text-gray-600">
-                  Project ID: {p._id?.slice(-8).toUpperCase()}
-                </span>
-              </div>
-
-              {/* Title Section */}
-              <div className="mb-6">
-                <h3 className="text-2xl font-black mb-1 text-white group-hover:text-blue-400 transition-colors uppercase">
-                  {p.projectName}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                    Lead: <span className="text-white">{p.teamLead?.name || "UNASSIGNED"}</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Detail Roster Section */}
-              <div className="space-y-4 mb-8 grow">
-                <p className="text-[8px] font-black text-blue-500/50 uppercase tracking-[0.3em] border-b border-white/5 pb-2">
-                  Team
-                </p>
-                
-                <div className="space-y-3">
-                  {p.team?.length > 0 ? (
-                    p.team.map((m: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center bg-white/2 p-3 rounded-xl border border-white/5 group-hover:bg-white/4 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-lg bg-blue-600/20 flex items-center justify-center text-[10px] font-black text-blue-400 border border-blue-500/20">
-                            {m.member?.name?.[0] || "?"}
-                          </div>
-                          <div>
-                            <p className="text-[11px] font-bold text-white leading-none">
-                              {m.member?.name || "Unknown"}
-                            </p>
-                            <p className="text-[8px] text-gray-500 uppercase font-black tracking-tighter">
-                              {m.role || "Developer"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[8px] font-mono text-blue-500/80 uppercase">
-                            MOD_{m.module || "GEN"}
-                          </p>
-                        </div>
+                <div className="relative bg-[#0d0d0d] border border-white/5 p-7 rounded-[2.5rem] backdrop-blur-3xl group-hover:border-white/20 group-hover:-translate-y-1 transition-all duration-300 h-full flex flex-col shadow-2xl">
+                  
+                  {/* Header: Status & ID */}
+                  <div className="flex justify-between items-start mb-8">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-[8px] font-mono text-gray-600 tracking-tighter uppercase">
+                        ID // {p._id?.slice(-8).toUpperCase()}
+                      </span>
+                      <div className={`flex items-center gap-2 px-3 py-1 rounded-full w-fit border ${statusConfig.bg}`}>
+                        <span className={`w-1 h-1 rounded-full ${statusConfig.dot} ${statusConfig.pulse ? 'animate-pulse' : ''}`} />
+                        <span className="text-[8px] font-black tracking-widest uppercase">{p.status || "UNKNOWN"}</span>
                       </div>
-                    ))
-                  ) : (
-                    <div className="py-4 text-center border border-dashed border-white/5 rounded-xl">
-                      <p className="text-[9px] text-gray-600 font-black italic uppercase tracking-widest">No Operatives Deployed</p>
                     </div>
-                  )}
+                    <div className="p-2 bg-white/5 rounded-xl border border-white/5">
+                      <Layers size={14} className="text-blue-500" />
+                    </div>
+                  </div>
+
+                  {/* Body: Title & Lead */}
+                  <div className="mb-8">
+                    <h3 className="text-xl font-black mb-3 text-white group-hover:text-blue-400 transition-colors uppercase leading-tight tracking-tight">
+                      {p.projectName}
+                    </h3>
+                    <div className="flex items-center gap-3 bg-white/[0.03] p-3 rounded-2xl border border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-[10px] font-bold text-white">
+                         {p.teamLead?.name?.[0] || <User size={12} />}
+                      </div>
+                      <div>
+                        <p className="text-[7px] text-gray-500 font-black uppercase tracking-widest">Team Lead</p>
+                        <p className="text-[11px] text-white font-bold">{p.teamLead?.name || "Unassigned"}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Team Roster: Advanced Avatar Stack */}
+                  <div className="space-y-4 mb-8">
+                    <div className="flex justify-between items-center">
+                      <p className="text-[8px] font-black text-gray-500 uppercase tracking-[0.3em] flex items-center gap-2">
+                        <Shield size={10} className="text-blue-500" /> 
+                        Team members
+                      </p>
+                      <div className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
+                        <span className="text-[9px] font-mono text-blue-400">{p.team?.length || 0} OPERATIVE(S)</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center group/stack">
+                      <div className="flex -space-x-3 overflow-visible">
+                        {p.team?.length > 0 ? (
+                          <>
+                            {p.team.slice(0, 5).map((m: any, idx: number) => (
+                              <div
+                                key={idx}
+                                className="relative transition-all duration-500 ease-out"
+                                style={{ 
+                                  transitionDelay: `${idx * 50}ms`,
+                                  zIndex: 10 + idx 
+                                }}
+                              >
+                                <div
+                                  title={`${m.member?.name} — ${m.role || 'Operative'}`}
+                                  className="relative h-10 w-10 rounded-xl ring-[3px] ring-[#0d0d0d] bg-[#151515] border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/stack:mr-1 group-hover/stack:scale-110 group-hover/stack:border-blue-500/50 cursor-crosshair shadow-lg"
+                                >
+                                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent" />
+                                  <span className="relative text-[10px] font-black text-white group-hover/stack:text-blue-400 transition-colors">
+                                    {m.member?.name?.[0]}
+                                  </span>
+                                  <div className="absolute top-0 left-0 w-full h-[1px] bg-blue-500/40 animate-scan pointer-events-none" />
+                                </div>
+                              </div>
+                            ))}
+                            {p.team.length > 5 && (
+                              <div className="z-30 relative h-10 w-10 rounded-xl ring-[3px] ring-[#0d0d0d] bg-[#1a1a1a] border border-white/5 flex flex-col items-center justify-center backdrop-blur-md">
+                                <span className="text-[8px] font-black text-blue-500 leading-none">+{p.team.length - 5}</span>
+                                <span className="text-[6px] font-mono text-gray-600 uppercase">More</span>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-dashed border-white/5 bg-white/[0.01] w-full">
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500/50 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                            <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest">Personnel_Standby</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer: Date & CTA */}
+                  <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Calendar size={12} />
+                      <span className="text-[10px] font-mono">
+                        {p.createdAt ? new Date(p.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) : '---'}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-blue-500 font-black text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2 transition-all">
+                      Access File
+                      <ArrowRight size={14} />
+                    </div>
+                  </div>
+
                 </div>
               </div>
-
-              {/* Progress/Footer */}
-              <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-end">
-                <div className="space-y-1">
-                  <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Created on</p>
-                  <p className="text-[10px] font-mono text-gray-400">
-                    {new Date(p.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest group-hover:gap-4 transition-all">
-                  Edit
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </div>
-              </div>
-
-            </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+          <div className="p-4 bg-white/5 rounded-full mb-4">
+            <Search size={24} className="text-gray-600" />
           </div>
-        ))}
-      </div>
+          <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.3em]">No matching operations found</p>
+        </div>
+      )}
     </div>
   );
 }
