@@ -2,17 +2,20 @@ export const updateProject = async (req, res) => {
   try {
     const { projectName, teamLead, team } = req.body;
 
-    // 1. Fetch the project first to check who the current Lead is
+    // 1. Fetch the project
     const project = await Project.findById(req.params.id);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // 2. PERMISSION CHECK
-    // Check if the person making the request is the current Lead or an Admin
-    const isCurrentLead = project.teamLead.toString() === req.user.id;
-    const isAdmin = req.user.role === 'admin';
+    // 2. SAFE PERMISSION CHECK
+    // Ensure we handle cases where teamLead might be a populated object or a simple ID
+    const currentLeadId = project.teamLead._id ? project.teamLead._id.toString() : project.teamLead.toString();
+    const requesterId = req.user?.id || req.user?._id; // Handle different passport/jwt naming
+    
+    const isCurrentLead = currentLeadId === requesterId;
+    const isAdmin = req.user?.role === 'admin';
 
     if (!isCurrentLead && !isAdmin) {
       return res.status(403).json({ 
@@ -20,23 +23,27 @@ export const updateProject = async (req, res) => {
       });
     }
 
-    // 3. UPDATE DATA
-    // We use the same update logic, but now it's protected by the check above
+    // 3. CLEAN THE DATA BEFORE UPDATE
+    // If teamLead was sent as an object from frontend, convert to ID string
+    const sanitizedLead = teamLead?._id || teamLead;
+
+    // 4. UPDATE DATA
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,
       { 
         projectName, 
-        teamLead, 
+        teamLead: sanitizedLead, 
         team 
       },
       { new: true, runValidators: true }
     )
-    .populate("teamLead", "name email")    // Added 'email' here
-    .populate("team.member", "name email"); // Added 'email' here
+    .populate("teamLead", "name email")
+    .populate("team.member", "name email");
 
     res.json(updatedProject);
   } catch (error) {
     console.error("Update Error:", error);
-    res.status(500).json({ message: "Server Error: " + error.message });
+    // Returning the actual error message helps you debug in the browser console
+    res.status(500).json({ message: "Server Error", details: error.message });
   }
 };
