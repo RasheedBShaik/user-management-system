@@ -1,3 +1,4 @@
+import Project from "../models/Project.js";
 export const updateProject = async (req, res) => {
   try {
     const { projectName, teamLead, team } = req.body;
