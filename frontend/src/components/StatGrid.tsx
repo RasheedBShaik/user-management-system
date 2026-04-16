@@ -68,7 +68,7 @@ export default function StatGrid({ users = [], projects = [], customers = [] }: 
       {stats.map((stat, i) => (
         <div 
           key={i} 
-          className="group relative bg-[#0b0d11] p-8 rounded-[2rem] border border-white/5 shadow-2xl overflow-hidden transition-all hover:border-white/10 hover:-translate-y-1 duration-500"
+          className="group relative bg-[#0b0d11] p-8 rounded-4xl border border-white/5 shadow-2xl overflow-hidden transition-all hover:border-white/10 hover:-translate-y-1 duration-500"
         >
           {/* Subtle Background Glow */}
           <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-5 blur-3xl ${stat.color}`} />
@@ -83,7 +83,7 @@ export default function StatGrid({ users = [], projects = [], customers = [] }: 
                  <span className="text-[7px] font-mono text-gray-700 uppercase tracking-tighter">Live_Telemetry</span>
               </div>
             </div>
-            <div className="p-2.5 bg-white/[0.03] border border-white/5 rounded-xl">
+            <div className="p-2.5 bg-white/3 border border-white/5 rounded-xl">
               {stat.icon}
             </div>
           </div>
@@ -100,7 +100,7 @@ export default function StatGrid({ users = [], projects = [], customers = [] }: 
                 className={`absolute top-0 left-0 h-full rounded-full ${stat.color} ${stat.shadow} transition-all duration-1000 ease-out z-10`} 
                 style={{ width: stat.width }} 
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-full h-full animate-scan-fast" />
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent w-full h-full animate-scan-fast" />
             </div>
             
             <div className="flex justify-between items-center">
@@ -113,9 +113,9 @@ export default function StatGrid({ users = [], projects = [], customers = [] }: 
 
           {/* Decorative Corner Detail */}
           <div className="absolute bottom-0 right-0 w-8 h-8 opacity-10">
-            <div className="absolute bottom-3 right-3 w-[2px] h-[2px] bg-white rounded-full" />
-            <div className="absolute bottom-3 right-6 w-[2px] h-[2px] bg-white rounded-full" />
-            <div className="absolute bottom-6 right-3 w-[2px] h-[2px] bg-white rounded-full" />
+            <div className="absolute bottom-3 right-3 w-0.5 h-0.5 bg-white rounded-full" />
+            <div className="absolute bottom-3 right-6 w-0.5 h-0.5 bg-white rounded-full" />
+            <div className="absolute bottom-6 right-3 w-0.5 h-0.5 bg-white rounded-full" />
           </div>
         </div>
       ))}

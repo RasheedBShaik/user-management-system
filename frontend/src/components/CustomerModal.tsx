@@ -44,12 +44,12 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[200] flex items-center justify-center p-4 animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-200 flex items-center justify-center p-4 animate-in fade-in zoom-in-95 duration-300">
       <div className="bg-[#080a0f] border border-white/10 w-full max-w-xl rounded-[2.5rem] shadow-[0_0_80px_rgba(37,99,235,0.15)] relative overflow-hidden">
         
         {/* Visual Top Accent */}
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-blue-500/50 animate-pulse"></div>
+        <div className="h-1 w-full bg-linear-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
+        <div className="absolute top-0 left-0 w-full h-px bg-blue-500/50 animate-pulse"></div>
 
         {/* Modal Header */}
         <div className="p-8 pb-4 flex justify-between items-start">
@@ -84,7 +84,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
                   <Terminal size={14} />
                </div>
                <input 
-                className="w-full bg-white/[0.03] border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 focus:bg-blue-600/[0.02] transition-all placeholder:text-gray-700"
+                className="w-full bg-white/3 border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 focus:bg-blue-600/2 transition-all placeholder:text-gray-700"
                 placeholder="Name"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -96,7 +96,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
               <div className="relative">
                 <Building2 size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
                 <input 
-                  className="w-full bg-white/[0.03] border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 transition-all placeholder:text-gray-700"
+                  className="w-full bg-white/3 border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 transition-all placeholder:text-gray-700"
                   placeholder="Organization"
                   value={formData.company}
                   onChange={(e) => setFormData({...formData, company: e.target.value})}
@@ -106,7 +106,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
 
               <div className="relative">
                 <select 
-                  className="w-full bg-white/[0.03] border border-white/10 p-4 rounded-2xl text-sm font-bold text-white outline-none appearance-none cursor-pointer focus:border-blue-500/50"
+                  className="w-full bg-white/3 border border-white/10 p-4 rounded-2xl text-sm font-bold text-white outline-none appearance-none cursor-pointer focus:border-blue-500/50"
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
                 >
@@ -120,7 +120,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
             <div className="relative group">
               <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
               <input 
-                className="w-full bg-white/[0.03] border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 transition-all placeholder:text-gray-700"
+                className="w-full bg-white/3 border border-white/10 p-4 pl-12 rounded-2xl text-sm font-bold text-white outline-none focus:border-blue-500/50 transition-all placeholder:text-gray-700"
                 placeholder="Comms_Email"
                 type="email"
                 value={formData.email}
@@ -143,7 +143,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className={`flex-1 flex items-center justify-center gap-2 py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-[0.3em] transition-all
+              className={`flex-1 flex items-center justify-center gap-2 py-5 rounded-3xl font-black uppercase text-[10px] tracking-[0.3em] transition-all
                 ${isSubmitting ? 'bg-gray-800 text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-500 shadow-xl shadow-blue-600/20 active:scale-95'}
               `}
             >
@@ -153,7 +153,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
             <button 
               type="button" 
               onClick={onClose} 
-              className="px-8 bg-white/5 text-gray-500 font-black py-5 rounded-[1.5rem] uppercase text-[10px] tracking-widest hover:text-white hover:bg-white/10 transition-all"
+              className="px-8 bg-white/5 text-gray-500 font-black py-5 rounded-3xl uppercase text-[10px] tracking-widest hover:text-white hover:bg-white/10 transition-all"
             >
               Cancel
             </button>

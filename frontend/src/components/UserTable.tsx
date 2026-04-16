@@ -71,30 +71,30 @@ export default function UserTable({ users, onRefresh }: { users: User[], onRefre
         
         <div className="flex items-center gap-4 px-6 py-3 bg-gray-900/40 rounded-2xl border border-white/5 backdrop-blur-md">
             <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Total Strength</span>
-            <div className="h-4 w-[1px] bg-white/10" />
+            <div className="h-4 w-px bg-white/10" />
             <span className="text-blue-500 font-mono text-xs font-bold">{sortedUsers.length.toString().padStart(2, '0')}</span>
         </div>
       </div>
 
       {/* --- TABLE CONTAINER WITH PADDING GUARD --- */}
-      <div className="p-1 bg-white/[0.02] rounded-[2.2rem] border border-white/5 shadow-inner">
-        <div className="relative bg-[#0a0a0a] rounded-[2rem] overflow-hidden border border-white/5">
+      <div className="p-1 bg-white/2 rounded-[2.2rem] border border-white/5 shadow-inner">
+        <div className="relative bg-[#0a0a0a] rounded-4xl overflow-hidden border border-white/5">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-separate border-spacing-0">
               <thead>
-                <tr className="bg-white/[0.02]">
+                <tr className="bg-white/2">
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Operative</th>
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Security_Clearance</th>
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Status_Control</th>
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5 text-right">Protocol</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.03]">
+              <tbody className="divide-y divide-white/3">
                 {sortedUsers.map((user) => (
                   <tr 
                     key={user._id} 
-                    className={`group hover:bg-white/[0.03] transition-all duration-300 ${
-                      user.role === 'admin' ? 'bg-blue-500/[0.02]' : ''
+                    className={`group hover:bg-white/3 transition-all duration-300 ${
+                      user.role === 'admin' ? 'bg-blue-500/2' : ''
                     }`}
                   >
                     {/* IDENTITY COLUMN */}
@@ -182,7 +182,7 @@ export default function UserTable({ users, onRefresh }: { users: User[], onRefre
                           <Trash2 size={16} className="group-hover/btn:rotate-12 transition-transform" />
                         </button>
                       ) : (
-                        <span className="text-[8px] font-mono text-gray-700 uppercase px-3 py-1 border border-gray-800 rounded-md bg-white/[0.01]">
+                        <span className="text-[8px] font-mono text-gray-700 uppercase px-3 py-1 border border-gray-800 rounded-md bg-white/1">
                           Protected
                         </span>
                       )}

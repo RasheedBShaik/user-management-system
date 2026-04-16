@@ -102,7 +102,7 @@ export default function UserPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-blue-500/30 pb-20">
-      <div className="fixed top-0 left-0 w-full h-64 bg-gradient-to-b from-blue-600/10 to-transparent pointer-events-none" />
+      <div className="fixed top-0 left-0 w-full h-64 bg-linear-to-b from-blue-600/10 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 relative z-10">
         
@@ -144,26 +144,26 @@ export default function UserPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           <aside className="lg:col-span-4 space-y-6">
-            <nav className="bg-white/[0.03] border border-white/[0.05] rounded-3xl p-3 backdrop-blur-md">
+            <nav className="bg-white/3 border border-white/5 rounded-3xl p-3 backdrop-blur-md">
               <TabBtn active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<User size={18} />} label="Profile Overview" />
               <TabBtn active={activeTab === 'projects'} onClick={() => setActiveTab('projects')} icon={<Briefcase size={18} />} label="My Assignments" />
               <TabBtn active={activeTab === 'security'} onClick={() => setActiveTab('security')} icon={<Lock size={18} />} label="Account Security" />
             </nav>
 
-            <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/[0.05] rounded-3xl p-8 relative overflow-hidden group">
+            <div className="bg-linear-to-br from-blue-600/20 to-purple-600/20 border border-white/5 rounded-3xl p-8 relative overflow-hidden group">
               <div className="relative z-10">
                 <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">Verified Profile</p>
                 <h3 className="text-2xl font-bold mb-1">{user?.name}</h3>
                 <p className="text-gray-400 text-sm mb-6">{user?.email}</p>
                 <div className="inline-block px-3 py-1 bg-white/10 rounded-lg text-xs font-mono">ID: {user?._id.slice(-6)}</div>
               </div>
-              <Shield className="absolute -bottom-4 -right-4 w-32 h-32 text-white/[0.03] rotate-12 group-hover:rotate-0 transition-transform duration-700" />
+              <Shield className="absolute -bottom-4 -right-4 w-32 h-32 text-white/3 rotate-12 group-hover:rotate-0 transition-transform duration-700" />
             </div>
           </aside>
 
           <main className="lg:col-span-8">
             {activeTab === 'overview' && (
-              <section className="bg-white/[0.03] border border-white/[0.05] rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white/3 border border-white/5 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-xl font-bold mb-6 flex items-center gap-2">General Information</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -176,7 +176,7 @@ export default function UserPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Email (Primary)</label>
-                      <input className="w-full bg-white/[0.02] border border-white/5 p-4 rounded-2xl text-gray-500 cursor-not-allowed" value={user?.email} disabled />
+                      <input className="w-full bg-white/2 border border-white/5 p-4 rounded-2xl text-gray-500 cursor-not-allowed" value={user?.email} disabled />
                     </div>
                   </div>
                   <button 
@@ -202,7 +202,7 @@ export default function UserPage() {
                     />
                   ))
                 ) : (
-                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-3xl p-12 text-center">
+                  <div className="bg-white/3 border border-white/5 rounded-3xl p-12 text-center">
                     <Briefcase className="w-16 h-16 text-gray-700 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-gray-400">No active assignments</h3>
                     <p className="text-gray-600">When you are added to a team, projects will appear here.</p>
@@ -212,7 +212,7 @@ export default function UserPage() {
             )}
 
             {activeTab === 'security' && (
-              <section className="bg-white/[0.03] border border-white/[0.05] rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white/3 border border-white/5 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-yellow-500"><Lock size={20} /> Security Settings</h2>
                 <div className="max-w-md space-y-4">
                   <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl flex items-start gap-3 mb-6">
@@ -241,7 +241,7 @@ export default function UserPage() {
 
       {/* TOAST NOTIFICATION */}
       {msg.text && (
-        <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in zoom-in slide-in-from-bottom-10 border z-[110] ${
+        <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in zoom-in slide-in-from-bottom-10 border z-110 ${
           msg.type === "success" ? "bg-emerald-600 border-emerald-400 text-white" : "bg-red-600 border-red-400 text-white"
         }`}>
           {msg.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
@@ -303,7 +303,7 @@ function ProjectDetailsModal({ proj, isOpen, onClose, currentUserId, onRefresh, 
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-120 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={onClose} />
       <div className="relative bg-[#111] border border-white/10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="sticky top-0 bg-[#111]/90 backdrop-blur-md p-6 border-b border-white/5 flex justify-between items-center z-10">
@@ -355,7 +355,7 @@ function ProjectDetailsModal({ proj, isOpen, onClose, currentUserId, onRefresh, 
                 const isEditing = editingId === mId;
 
                 return (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl group/member hover:bg-white/[0.04] transition-colors">
+                  <div key={idx} className="flex items-center justify-between p-4 bg-white/2 border border-white/5 rounded-2xl group/member hover:bg-white/4 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold border border-white/5">
                         {member.member?.name?.charAt(0) || "?" }
@@ -425,7 +425,7 @@ function ProjectDetailsModal({ proj, isOpen, onClose, currentUserId, onRefresh, 
           </div>
         </div>
 
-        <div className="p-6 border-t border-white/5 bg-white/[0.01] flex justify-center items-center gap-2">
+        <div className="p-6 border-t border-white/5 bg-white/1 flex justify-center items-center gap-2">
             <Lock size={12} className="text-gray-700" />
             <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
               {isLeadOfProject ? "Authenticated Management View" : "Restricted Member View"}
@@ -445,7 +445,7 @@ function StatCard({ title, value, icon, color }: any) {
     orange: "from-orange-500/20"
   };
   return (
-    <div className={`bg-white/[0.03] border border-white/[0.05] p-6 rounded-3xl bg-gradient-to-br ${colorMap[color]} to-transparent shadow-xl`}>
+    <div className={`bg-white/3 border border-white/5 p-6 rounded-3xl bg-linear-to-br ${colorMap[color]} to-transparent shadow-xl`}>
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-white/5 rounded-xl">{icon}</div>
       </div>
@@ -470,7 +470,7 @@ function ProjectCard({ proj, userId, onOpenDetails }: any) {
   const memberInfo = proj.team?.find((t: any) => (t.member?._id || t.member) === userId);
 
   return (
-    <div className="group bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.05] hover:border-blue-500/30 p-8 rounded-3xl transition-all duration-300">
+    <div className="group bg-white/3 hover:bg-white/5 border border-white/5 hover:border-blue-500/30 p-8 rounded-3xl transition-all duration-300">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h4 className="text-2xl font-bold group-hover:text-blue-400 transition-colors mb-2">{proj.projectName}</h4>
@@ -484,7 +484,7 @@ function ProjectCard({ proj, userId, onOpenDetails }: any) {
             {isLead && <span className="text-[10px] font-bold uppercase px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 flex items-center gap-1"><Shield size={10} /> Team Lead</span>}
           </div>
         </div>
-        <div className="bg-white/5 px-6 py-3 rounded-2xl text-right border border-white/5 min-w-[140px]">
+        <div className="bg-white/5 px-6 py-3 rounded-2xl text-right border border-white/5 min-w-35">
           <p className="text-[10px] text-gray-500 uppercase font-black tracking-tighter">Your Module</p>
           <p className="text-lg font-bold text-blue-100">{memberInfo?.module || "General"}</p>
         </div>

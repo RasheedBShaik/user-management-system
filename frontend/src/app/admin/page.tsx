@@ -82,8 +82,8 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-blue-500/30 pb-20">
       {/* Subtle Background Glows */}
-      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] pointer-events-none rounded-full" />
-      <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-600/10 blur-[120px] pointer-events-none rounded-full" />
+      <div className="fixed top-0 left-1/4 w-125 h-125 bg-blue-600/10 blur-[120px] pointer-events-none rounded-full" />
+      <div className="fixed bottom-0 right-1/4 w-100 h-100 bg-purple-600/10 blur-[120px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-6 pt-8 relative z-10">
         <Header onSignOut={() => { localStorage.clear(); router.push("/login"); }} />
@@ -135,7 +135,7 @@ export default function AdminPage() {
         </div>
 
         {/* --- MAIN CONTENT AREA --- */}
-        <main className="min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <main className="min-h-100 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {activeTab === "users" && (
                 <div className="bg-gray-900/20 border border-white/5 rounded-3xl backdrop-blur-sm overflow-hidden">
                     <UserTable users={users} onRefresh={fetchData} />
@@ -158,7 +158,7 @@ export default function AdminPage() {
         </main>
 
         <footer className="mt-32 pb-10 flex flex-col items-center justify-center gap-4 opacity-30">
-          <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
+          <div className="h-px w-20 bg-linear-to-r from-transparent via-gray-500 to-transparent" />
           <p className="text-[9px] font-black uppercase tracking-[0.8em]">
             Secured Admin Ecosystem
           </p>

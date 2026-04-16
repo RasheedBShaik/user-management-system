@@ -104,13 +104,13 @@ export default function ProjectModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-2xl z-100 flex items-center justify-center p-4 animate-in fade-in duration-300">
       <div className="bg-[#0a0c10] border border-white/10 w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] relative flex flex-col max-h-[90vh]">
         {/* TOP ACCENT BAR */}
-        <div className="h-1 w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600"></div>
+        <div className="h-1 w-full bg-linear-to-r from-blue-600 via-cyan-400 to-blue-600"></div>
 
         {/* HEADER */}
-        <div className="px-8 py-8 md:px-12 flex justify-between items-center border-b border-white/5 bg-white/[0.01]">
+        <div className="px-8 py-8 md:px-12 flex justify-between items-center border-b border-white/5 bg-white/1">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
               <Command className="text-blue-500" size={20} />
@@ -227,7 +227,7 @@ export default function ProjectModal({
               {formData.team.map((member, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col md:flex-row gap-6 bg-white/[0.02] p-6 rounded-[2rem] border border-white/5 relative group hover:border-blue-500/30 transition-all animate-in slide-in-from-right-4 duration-300"
+                  className="flex flex-col md:flex-row gap-6 bg-white/2 p-6 rounded-4xl border border-white/5 relative group hover:border-blue-500/30 transition-all animate-in slide-in-from-right-4 duration-300"
                 >
                   <div className="flex-1 space-y-2">
                     <label className="text-[8px] text-gray-600 uppercase font-black tracking-widest ml-1">

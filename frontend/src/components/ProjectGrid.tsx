@@ -77,7 +77,7 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
                 className="group relative cursor-pointer list-none"
               >
                 {/* Outer Glow */}
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600 to-purple-600 rounded-[2.5rem] opacity-0 group-hover:opacity-20 blur-xl transition duration-500"></div>
+                <div className="absolute -inset-0.5 bg-linear-to-br from-blue-600 to-purple-600 rounded-[2.5rem] opacity-0 group-hover:opacity-20 blur-xl transition duration-500"></div>
 
                 <div className="relative bg-[#0d0d0d] border border-white/5 p-7 rounded-[2.5rem] backdrop-blur-3xl group-hover:border-white/20 group-hover:-translate-y-1 transition-all duration-300 h-full flex flex-col shadow-2xl">
                   
@@ -102,8 +102,8 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
                     <h3 className="text-xl font-black mb-3 text-white group-hover:text-blue-400 transition-colors uppercase leading-tight tracking-tight">
                       {p.projectName}
                     </h3>
-                    <div className="flex items-center gap-3 bg-white/[0.03] p-3 rounded-2xl border border-white/5">
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-[10px] font-bold text-white">
+                    <div className="flex items-center gap-3 bg-white/3 p-3 rounded-2xl border border-white/5">
+                      <div className="w-8 h-8 rounded-xl bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center text-[10px] font-bold text-white">
                          {p.teamLead?.name?.[0] || <User size={12} />}
                       </div>
                       <div>
@@ -142,11 +142,11 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
                                   title={`${m.member?.name} — ${m.role || 'Operative'}`}
                                   className="relative h-10 w-10 rounded-xl ring-[3px] ring-[#0d0d0d] bg-[#151515] border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/stack:mr-1 group-hover/stack:scale-110 group-hover/stack:border-blue-500/50 cursor-crosshair shadow-lg"
                                 >
-                                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent" />
+                                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent" />
                                   <span className="relative text-[10px] font-black text-white group-hover/stack:text-blue-400 transition-colors">
                                     {m.member?.name?.[0]}
                                   </span>
-                                  <div className="absolute top-0 left-0 w-full h-[1px] bg-blue-500/40 animate-scan pointer-events-none" />
+                                  <div className="absolute top-0 left-0 w-full h-px bg-blue-500/40 animate-scan pointer-events-none" />
                                 </div>
                               </div>
                             ))}
@@ -158,7 +158,7 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
                             )}
                           </>
                         ) : (
-                          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-dashed border-white/5 bg-white/[0.01] w-full">
+                          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-dashed border-white/5 bg-white/1 w-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500/50 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                             <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest">Personnel_Standby</p>
                           </div>
@@ -188,7 +188,7 @@ export default function ProjectGrid({ projects, onSelect, onCreate }: any) {
           })}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+        <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-white/5 rounded-[3rem] bg-white/1">
           <div className="p-4 bg-white/5 rounded-full mb-4">
             <Search size={24} className="text-gray-600" />
           </div>

@@ -44,10 +44,10 @@ export default function CustomerList({ customers, onRefresh }: Props) {
 
   return (
     // Added min-h-[600px] so the UI doesn't collapse with only 1 customer
-    <div className="bg-[#0b0d11] rounded-[2rem] border border-white/10 shadow-2xl min-h-[600px] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="bg-[#0b0d11] rounded-4xl border border-white/10 shadow-2xl min-h-150 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
       
       {/* Header Section */}
-      <div className="p-6 sm:p-8 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/[0.02]">
+      <div className="p-6 sm:p-8 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/2">
         <div>
           <h2 className="text-xl sm:text-2xl font-black uppercase tracking-widest text-white flex items-center gap-3">
             <div className="w-2 h-6 bg-blue-600 rounded-full" />
@@ -91,7 +91,7 @@ export default function CustomerList({ customers, onRefresh }: Props) {
             {customers.map((c) => {
               const safeId = (c._id || c.id || "000000").toString();
               return (
-                <tr key={safeId} className="hover:bg-blue-600/[0.03] transition-colors group">
+                <tr key={safeId} className="hover:bg-blue-600/3 transition-colors group">
                   <td className="px-8 py-5">
                     <div className="flex flex-col">
                       <span className="text-sm font-black text-white group-hover:text-blue-400 transition-colors uppercase">
@@ -135,7 +135,7 @@ export default function CustomerList({ customers, onRefresh }: Props) {
 
         {/* Empty State UI */}
         {customers.length === 0 && (
-          <div className="h-[400px] flex flex-col items-center justify-center text-gray-600 bg-white/[0.01]">
+          <div className="h-100 flex flex-col items-center justify-center text-gray-600 bg-white/1">
             <ShieldCheck size={40} className="opacity-10 mb-4" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em]">No Personnel Records Found</p>
           </div>
