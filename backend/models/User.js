@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
+  name: { type: String, required: true },
+  email: { type: String, unique: true, required: true },
+  phone: { type: String, required: true, trim: true }, // <--- Added Phone Number field
+  password: { type: String, required: true },
   role: {
     type: String,
     enum: ["admin", "user"],
@@ -16,4 +17,5 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model("User", userSchema);
+// Check if the model exists before exporting to prevent errors in Next.js development
+export default mongoose.models.User || mongoose.model("User", userSchema);

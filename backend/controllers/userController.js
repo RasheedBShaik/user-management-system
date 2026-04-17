@@ -15,10 +15,12 @@ export const getUsers = async (req, res) => {
 /* ---------------- CREATE USER (ADMIN ONLY) ---------------- */
 export const createUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    // 1. Added 'phone' to the extracted fields
+    const { name, email, phone, password, role } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ msg: "All fields required" });
+    // 2. Added phone to the validation check
+    if (!name || !email || !phone || !password) {
+      return res.status(400).json({ msg: "All fields (name, email, phone, password) required" });
     }
 
     const existingUser = await User.findOne({ email });
@@ -32,6 +34,7 @@ export const createUser = async (req, res) => {
     const user = await User.create({
       name,
       email,
+      phone, // 3. Save phone to the database
       password: hashed,
       role: role || "user",
       status: "active"
@@ -54,6 +57,7 @@ export const updateUser = async (req, res) => {
       updates.password = await bcrypt.hash(updates.password, 10);
     }
 
+    // This will now handle 'phone' if passed in the req.body
     const user = await User.findByIdAndUpdate(
       req.params.id,
       updates,
@@ -118,6 +122,7 @@ export const updateMe = async (req, res) => {
       updates.password = await bcrypt.hash(updates.password, 10);
     }
 
+    // This will now handle 'phone' if the user updates it in their settings
     const user = await User.findByIdAndUpdate(
       req.user.id,
       updates,
