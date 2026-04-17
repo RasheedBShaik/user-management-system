@@ -1,9 +1,14 @@
+import dns from "node:dns";
+// 1. DNS & NETWORK FIXES (Crucial for the 'ECONNREFUSED' error)
+dns.setServers(["8.8.8.8", "1.1.1.1"]); // Use Google/Cloudflare DNS
+dns.setDefaultResultOrder("ipv4first"); // Prefer IPv4 over IPv6
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
-// 1. CONFIGURATION
+// 2. CONFIGURATION
 dotenv.config();
 const app = express();
 
@@ -13,10 +18,10 @@ const allowedOrigins = [
   "https://user-management-system-five-alpha.vercel.app",
 ];
 
-// 2. CORS CONFIGURATION
+// 3. CORS CONFIGURATION
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like Postman)
+    // Allow requests with no origin (like Postman or mobile apps)
     if (!origin) return callback(null, true);
 
     const isAllowed = allowedOrigins.includes(origin) || origin.startsWith("http://localhost:");
@@ -34,27 +39,14 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-// Apply CORS to all requests
+// Apply CORS to all requests (Handles Preflight automatically)
 app.use(cors(corsOptions));
-
-// 3. MANUAL PREFLIGHT HANDLER (The "Express 5 Fix")
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Allow EVERYONE
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  next();
-});
 
 // 4. BODY PARSING
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 5. ROUTE IMPORTS
-// Ensure your route files use 'export default router;'
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";

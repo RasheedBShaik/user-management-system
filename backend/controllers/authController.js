@@ -53,6 +53,7 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone, // Added phone to login response
         role: user.role,
         status: user.status, // IMPORTANT
       },
@@ -67,9 +68,11 @@ export const login = async (req, res) => {
 /* ---------------- REGISTER ---------------- */
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    // Added 'phone' to destructuring
+    const { name, email, phone, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    // Added 'phone' to validation
+    if (!name || !email || !password || !phone) {
       return res.status(400).json({ msg: "All fields required" });
     }
 
@@ -84,6 +87,7 @@ export const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
+      phone, // Added phone to creation
       password: hashedPassword,
       role: role || "user",
       status: "active", // default
@@ -101,6 +105,7 @@ export const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone, // Added phone to response
         role: user.role,
         status: user.status,
       },
