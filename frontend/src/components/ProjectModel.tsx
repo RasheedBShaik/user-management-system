@@ -1,34 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  X,
-  UserPlus,
-  Trash2,
-  Command,
-  Shield,
-  Activity,
-  Save,
-} from "lucide-react";
+import { X, Command, Shield, Activity, Save, UserPlus, Trash2 } from "lucide-react";
 import API from "../services/api";
 
-interface Member {
-  member: string;
-  role: string;
-  module: string;
-}
-
-export default function ProjectModal({
-  project,
-  users,
-  onClose,
-  onRefresh,
-}: any) {
+export default function ProjectModal({ project, users, onClose, onRefresh }: any) {
   const [formData, setFormData] = useState({
     projectName: "",
     teamLead: "",
     status: "Active",
-    team: [{ member: "", role: "Developer", module: "" }] as Member[],
+    team: [{ member: "", role: "Developer", module: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,250 +19,165 @@ export default function ProjectModal({
         projectName: project.projectName || "",
         teamLead: project.teamLead?._id || project.teamLead || "",
         status: project.status || "Active",
-        team:
-          project.team?.length > 0
-            ? project.team.map((t: any) => ({
-                member: t.member?._id || t.member || "",
-                role: t.role || "Developer",
-                module: t.module || "",
-              }))
-            : [{ member: "", role: "Developer", module: "" }],
-      });
-    } else {
-      setFormData({
-        projectName: "",
-        teamLead: "",
-        status: "Active",
-        team: [{ member: "", role: "Developer", module: "" }],
+        team: project.team?.length > 0 ? project.team.map((t: any) => ({
+          member: t.member?._id || t.member || "",
+          role: t.role || "Developer",
+          module: t.module || ""
+        })) : [{ member: "", role: "Developer", module: "" }]
       });
     }
   }, [project]);
 
-  const addMember = () => {
-    setFormData((prev) => ({
-      ...prev,
-      team: [...prev.team, { member: "", role: "Developer", module: "" }],
-    }));
-  };
-
-  const removeMember = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      team: prev.team.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent double-clicks
+    if (isSubmitting) return; 
     setIsSubmitting(true);
 
-    const payload = {
-      projectName: formData.projectName,
-      teamLead: formData.teamLead || undefined,
-      status: formData.status,
-      team: formData.team
-        .filter((t) => t.member !== "")
-        .map((t) => ({
-          member: t.member,
-          role: t.role,
-          module: t.module || "General",
-        })),
-    };
-
     try {
+      // CLEANUP: Only send team members that actually have a user selected
+      // This prevents the backend from receiving empty strings and crashing
+      const cleanedTeam = formData.team.filter(m => m.member !== "");
+      
+      const payload = {
+        ...formData,
+        team: cleanedTeam
+      };
+
       if (project?._id) {
         await API.put(`/projects/${project._id}`, payload);
       } else {
         await API.post("/projects", payload);
       }
-      onRefresh();
+
+      await onRefresh();
       onClose();
     } catch (err: any) {
-      alert(`System Error: ${err.message}`);
+      console.error("Transmission Error:", err);
+      alert(err.response?.data?.message || "CRITICAL_SYSTEM_ERROR: Data Sync Failed");
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-2xl z-100 flex items-center justify-center p-4 animate-in fade-in duration-300">
-      <div className="bg-[#0a0c10] border border-white/10 w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] relative flex flex-col max-h-[90vh]">
-        {/* TOP ACCENT BAR */}
-        <div className="h-1 w-full bg-linear-to-r from-blue-600 via-cyan-400 to-blue-600"></div>
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-100 flex items-center justify-center p-4 animate-in fade-in duration-500">
+      <div className="bg-[#050505] border border-white/10 w-full max-w-5xl rounded-[3rem] shadow-[0_0_100px_rgba(0,0,0,1)] relative flex flex-col max-h-[92vh] overflow-hidden">
+        
+        {/* INTERFACE GLOW */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-linear-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_20px_#3b82f6]"></div>
 
         {/* HEADER */}
-        <div className="px-8 py-8 md:px-12 flex justify-between items-center border-b border-white/5 bg-white/1">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-              <Command className="text-blue-500" size={20} />
+        <div className="px-10 py-10 flex justify-between items-center border-b border-white/5">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 bg-blue-500/10 rounded-2xl border border-blue-500/30 flex items-center justify-center shadow-[inset_0_0_15px_rgba(59,130,246,0.1)]">
+              <Command className="text-blue-500" size={24} />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest text-white leading-none">
-                {project ? "Update Project" : "New Project"}
+              <h2 className="text-3xl font-black text-white tracking-tighter uppercase leading-none">
+                {project ? "Edit Operation" : "New Operation"}
               </h2>
-              <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mt-1">
-                Status: Ready for Transmission
-              </p>
+              <p className="text-[10px] font-mono text-gray-500 mt-2 tracking-[0.3em]">SECURE_DATA_TRANSMISSION_PROTOCOL_ACTIVE</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-3 text-gray-500 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/5"
-          >
+          <button onClick={onClose} className="p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 text-gray-500 hover:text-white transition-all">
             <X size={20} />
           </button>
         </div>
 
-        {/* FORM BODY */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12 custom-scrollbar"
-        >
-          {/* PRIMARY ATTRIBUTES */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                <Activity size={12} className="text-blue-500" /> Identifier
-              </label>
+        {/* BODY */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-12 custom-scrollbar space-y-16">
+          
+          {/* PRIMARY DATA */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="space-y-4">
+              <label className="text-[10px] font-mono text-gray-500 tracking-[0.4em] uppercase">Project Name</label>
               <input
-                required
-                className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 focus:bg-blue-500/5 text-sm font-bold text-white transition-all placeholder:text-gray-700"
+                className="w-full bg-white/3 border border-white/10 p-5 rounded-2xl text-white font-bold focus:border-blue-500/50 outline-none transition-all placeholder:text-gray-800"
                 value={formData.projectName}
-                onChange={(e) =>
-                  setFormData({ ...formData, projectName: e.target.value })
-                }
-                placeholder="OPERATION_NAME"
+                onChange={e => setFormData({...formData, projectName: e.target.value})}
+                placeholder="OP_NAME_..."
               />
             </div>
 
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                <Shield size={12} className="text-blue-500" /> Commander
-              </label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-mono text-gray-500 tracking-[0.4em] uppercase flex items-center gap-2"><Shield size={12}/> Lead</label>
               <select
-                className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm font-bold text-white cursor-pointer focus:border-blue-500 transition-all appearance-none"
+                className="w-full bg-white/3 border border-white/10 p-5 rounded-2xl text-white font-bold outline-none cursor-pointer appearance-none"
                 value={formData.teamLead}
-                onChange={(e) =>
-                  setFormData({ ...formData, teamLead: e.target.value })
-                }
+                onChange={e => setFormData({...formData, teamLead: e.target.value})}
               >
-                <option value="" className="bg-[#0a0c10]">
-                  UNASSIGNED
-                </option>
-                {users.map((u: any) => (
-                  <option key={u._id} value={u._id} className="bg-[#0a0c10]">
-                    {u.name}
-                  </option>
-                ))}
+                <option value="" className="bg-black">SELECT</option>
+                {users.map((u: any) => <option key={u._id} value={u._id} className="bg-black">{u.name}</option>)}
               </select>
             </div>
 
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                <Activity size={12} className="text-blue-500" /> Protocol
-              </label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-mono text-gray-500 tracking-[0.4em] uppercase flex items-center gap-2"><Activity size={12}/> Status </label>
               <select
-                className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm font-bold text-white cursor-pointer focus:border-blue-500 transition-all appearance-none"
+                className="w-full bg-white/3 border border-white/10 p-5 rounded-2xl text-white font-bold outline-none cursor-pointer appearance-none"
                 value={formData.status}
-                onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value })
-                }
+                onChange={e => setFormData({...formData, status: e.target.value})}
               >
-                <option value="Active" className="bg-[#0a0c10]">
-                  PLANNING
-                </option>
-                <option value="In Progress" className="bg-[#0a0c10]">
-                  ACTIVE/RUNNING
-                </option>
-                <option value="Pending" className="bg-[#0a0c10]">
-                  PENDING
-                </option>
-                <option value="Closed" className="bg-[#0a0c10]">
-                  CANCELLED
-                </option>
+                <option value="Active" className="bg-black">PLANNING</option>
+                <option value="In Progress" className="bg-black">ACTIVE/RUNNING</option>
+                <option value="Pending" className="bg-black">COMPLETED</option>
+                <option value="Closed" className="bg-black">CANCELLED</option>
               </select>
             </div>
           </div>
 
           {/* ROSTER SECTION */}
-          <div className="space-y-6">
-            <div className="flex justify-between items-end border-b border-white/5 pb-4">
-              <div>
-                <h3 className="text-xs font-black text-blue-500 uppercase tracking-[0.3em]">
-                  TEAM MEMBERS
-                </h3>
-                <p className="text-[9px] text-gray-600 uppercase font-mono mt-1">
-                  Deploy units to the field
-                </p>
-              </div>
+          <div className="space-y-8">
+            <div className="flex items-center justify-between border-b border-white/5 pb-6">
+              <h3 className="text-sm font-black text-blue-500 tracking-[0.4em] uppercase">Team Members</h3>
               <button
                 type="button"
-                onClick={addMember}
-                className="flex items-center gap-2 text-[9px] font-black bg-blue-500/10 text-blue-400 px-5 py-2.5 rounded-xl hover:bg-blue-500 hover:text-white transition-all active:scale-95 border border-blue-500/20"
+                onClick={() => setFormData({...formData, team: [...formData.team, { member: "", role: "Developer", module: "" }]})}
+                className="flex items-center gap-3 px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[10px] font-black text-blue-500 hover:bg-blue-500 hover:text-white transition-all"
               >
-                <UserPlus size={14} /> ADD MEMBER
+                <UserPlus size={14}/> ADD
               </button>
             </div>
 
-            <div className="space-y-3 pr-2 overflow-visible">
-              {formData.team.map((member, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col md:flex-row gap-6 bg-white/2 p-6 rounded-4xl border border-white/5 relative group hover:border-blue-500/30 transition-all animate-in slide-in-from-right-4 duration-300"
-                >
-                  <div className="flex-1 space-y-2">
-                    <label className="text-[8px] text-gray-600 uppercase font-black tracking-widest ml-1">
-                      Identity
-                    </label>
-                    <select
-                      className="w-full bg-transparent text-sm font-bold text-white outline-none cursor-pointer border-b border-white/10 focus:border-blue-500 pb-2 transition-all"
-                      value={member.member}
-                      onChange={(e) => {
-                        const newTeam = [...formData.team];
-                        newTeam[idx].member = e.target.value;
-                        setFormData({ ...formData, team: newTeam });
-                      }}
-                    >
-                      <option value="" className="bg-[#0a0c10]">
-                        Select Unit...
-                      </option>
-                      {users.map((u: any) => (
-                        <option
-                          key={u._id}
-                          value={u._id}
-                          className="bg-[#0a0c10]"
-                        >
-                          {u.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="flex-[1.5] space-y-2">
-                    <label className="text-[8px] text-gray-600 uppercase font-black tracking-widest ml-1">
-                      Functional_Module
-                    </label>
-                    <input
-                      placeholder="Enter specific role or module..."
-                      className="w-full bg-transparent text-sm text-blue-100 border-b border-white/10 focus:border-blue-500 outline-none pb-2 transition-all placeholder:text-gray-800"
-                      value={member.module}
-                      onChange={(e) => {
-                        const newTeam = [...formData.team];
-                        newTeam[idx].module = e.target.value;
-                        setFormData({ ...formData, team: newTeam });
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex items-end pb-1">
-                    <button
-                      type="button"
-                      onClick={() => removeMember(idx)}
-                      className="p-3 rounded-xl text-gray-700 hover:bg-red-500/10 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+            <div className="grid grid-cols-1 gap-4">
+              {formData.team.map((m, idx) => (
+                <div key={idx} className="flex flex-col md:flex-row gap-6 bg-white/1 border border-white/5 p-8 rounded-4xl hover:border-white/10 transition-all group">
+                   <div className="flex-1 space-y-3">
+                      <p className="text-[8px] font-mono text-gray-700 uppercase tracking-widest">Identity</p>
+                      <select 
+                        className="w-full bg-transparent border-b border-white/10 p-2 text-white outline-none"
+                        value={m.member}
+                        onChange={e => {
+                          const newTeam = [...formData.team];
+                          newTeam[idx].member = e.target.value;
+                          setFormData({...formData, team: newTeam});
+                        }}
+                      >
+                        <option value="" className="bg-black">SELECT</option>
+                        {users.map((u: any) => <option key={u._id} value={u._id} className="bg-black">{u.name}</option>)}
+                      </select>
+                   </div>
+                   <div className="flex-2 space-y-3">
+                      <p className="text-[8px] font-mono text-gray-700 uppercase tracking-widest">Module Assignment</p>
+                      <input 
+                        className="w-full bg-transparent border-b border-white/10 p-2 text-blue-400 outline-none placeholder:text-gray-900"
+                        placeholder="ENTER_FUNCTION..."
+                        value={m.module}
+                        onChange={e => {
+                          const newTeam = [...formData.team];
+                          newTeam[idx].module = e.target.value;
+                          setFormData({...formData, team: newTeam});
+                        }}
+                      />
+                   </div>
+                   <button 
+                    type="button"
+                    onClick={() => setFormData({...formData, team: formData.team.filter((_, i) => i !== idx)})}
+                    className="p-4 text-gray-700 hover:text-red-500 transition-colors self-end"
+                   >
+                    <Trash2 size={18}/>
+                   </button>
                 </div>
               ))}
             </div>
@@ -289,22 +185,16 @@ export default function ProjectModal({
         </form>
 
         {/* SUBMISSION FOOTER */}
-        <div className="px-8 py-8 md:px-12 border-t border-white/5 bg-white/1">
+        <div className="p-10 border-t border-white/5 bg-white/1">
           <button
-            type="submit"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`w-full py-5 rounded-3xl font-black uppercase text-[10px] tracking-[0.4em] transition-all text-white flex items-center justify-center gap-3
-              ${isSubmitting ? "bg-gray-800 animate-pulse cursor-wait" : "bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-900/20 active:scale-[0.98]"}
+            className={`w-full py-6 rounded-4xl text-[12px] font-black uppercase tracking-[0.5em] transition-all shadow-[0_0_40px_rgba(0,0,0,0.5)] flex items-center justify-center gap-4
+              ${isSubmitting ? "bg-gray-900 text-gray-700 animate-pulse" : "bg-blue-600 hover:bg-blue-500 text-white active:scale-95 shadow-blue-500/20"}
             `}
           >
-            {isSubmitting ? (
-              "SYNCHRONIZING..."
-            ) : (
-              <>
-                <Save size={16} />
-                {project ? "Update Changes" : "Start Project"}
-              </>
+            {isSubmitting ? "TRANSMITTING..." : (
+              <><Save size={18}/> {project ? "UPDATE DATA" : "INITIATE_OPERATION"}</>
             )}
           </button>
         </div>
