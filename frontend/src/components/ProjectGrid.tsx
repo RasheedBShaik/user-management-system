@@ -96,7 +96,7 @@ export default function ProjectGrid({ projects, onSelect }: any) {
                       {p.projectName}
                     </h3>
 
-                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/2 border border-white/5 group-hover:bg-white/4 transition-colors">
+                    <div className="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-white/2 border border-white/5 group-hover:bg-white/4 transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shrink-0">
                         <Shield size={16} className="text-blue-500" />
                       </div>
@@ -108,7 +108,7 @@ export default function ProjectGrid({ projects, onSelect }: any) {
                   </div>
 
                   {/* PERSONNEL STACK - UNIFIED SPACING */}
-                  <div className="py-8 border-t border-white/5 shrink-0 mt-6">
+                  <div className="py-6 border-t border-white/5 shrink-0 mt-6">
                     <div className="mx-4 flex items-center gap-2">
                       
                         {/* Logic: Show max 3 members + count to keep layout clean */}
@@ -141,7 +141,7 @@ export default function ProjectGrid({ projects, onSelect }: any) {
                   <div className="flex items-center justify-between pt-6 group/btn border-t border-white/4 shrink-0">
                     <span className="text-[9px] font-mono text-gray-800 tracking-widest uppercase">Secured_Entry</span>
                     <div className="flex items-center gap-2 text-blue-500 text-[10px] font-black tracking-[0.2em] group-hover:text-blue-400 transition-all">
-                      INTERROGATE <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform duration-500" />
+                      EDIT <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform duration-500" />
                     </div>
                   </div>
                 </div>

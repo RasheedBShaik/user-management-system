@@ -102,7 +102,7 @@ export default function ProjectModal({ project, users, onClose, onRefresh }: any
               <div className="flex gap-2">
                 {confirmDelete ? (
                   <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white text-[10px] font-bold rounded-xl uppercase tracking-widest">
-                    {isDeleting ? "Purging..." : "Confirm Delete"}
+                    {isDeleting ? "Deleting..." : "Confirm Deletion"}
                   </button>
                 ) : (
                   <button onClick={() => setConfirmDelete(true)} className="p-3 text-gray-500 hover:text-red-500 transition-colors">
