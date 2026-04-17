@@ -1,20 +1,19 @@
 import Project from "../models/Project.js";
+
 export const updateProject = async (req, res) => {
   try {
-    const { projectName, teamLead, team } = req.body;
+    // 1. Destructure all fields including 'status'
+    const { projectName, teamLead, team, status } = req.body;
 
-    // 1. Fetch the project
     const project = await Project.findById(req.params.id);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // 2. SAFE PERMISSION CHECK
-    // Extract the ID string safely regardless of whether it's populated or not
+    // 2. Permission Check
     const currentLeadId = project.teamLead?._id?.toString() || project.teamLead?.toString();
     const requesterId = req.user?.id || req.user?._id;
-
     const isCurrentLead = currentLeadId === requesterId;
     const isAdmin = req.user?.role === 'admin';
 
@@ -24,23 +23,23 @@ export const updateProject = async (req, res) => {
       });
     }
 
-    // 3. SANITIZE DATA (The "500 Error" Fix)
-    // Mongoose will crash if 'member' is an object instead of a string ID.
+    // 3. Sanitize Data
     const sanitizedTeam = team ? team.map(t => ({
-      member: t.member?._id || t.member, // Ensure we only save the ID string
+      member: t.member?._id || t.member, 
       module: t.module,
       role: t.role
     })) : project.team;
 
     const sanitizedLead = teamLead?._id || teamLead || project.teamLead;
 
-    // 4. PERFORM UPDATE
+    // 4. Perform Update (Status now included)
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,
       { 
         projectName: projectName || project.projectName, 
         teamLead: sanitizedLead, 
-        team: sanitizedTeam 
+        team: sanitizedTeam,
+        status: status || project.status // CRITICAL FIX HERE
       },
       { new: true, runValidators: true }
     )
@@ -50,7 +49,6 @@ export const updateProject = async (req, res) => {
     res.json(updatedProject);
   } catch (error) {
     console.error("Backend Update Error:", error);
-    // This sends the specific Mongoose error back to your frontend so you can see it
     res.status(500).json({ 
       message: "Internal Server Error", 
       error: error.message 
