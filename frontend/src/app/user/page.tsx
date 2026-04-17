@@ -24,7 +24,7 @@ export default function UserPage() {
 
   // Form States
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState(""); 
+  const [phone, setPhone] = useState("");
   const [msg, setMsg] = useState({ type: "", text: "" });
   const [updating, setUpdating] = useState(false);
 
@@ -47,7 +47,7 @@ export default function UserPage() {
 
       const currentUser = userRes.data;
       setUser(currentUser);
-      
+
       // Sync local form state with fetched data
       setName(currentUser.name || "");
       setPhone(currentUser.phone || "");
@@ -80,16 +80,16 @@ export default function UserPage() {
     if (!name.trim()) return;
     try {
       setUpdating(true);
-      
+
       // FIX: Changed from `/users/${user._id}` to `/users/me` to avoid 403 Forbidden
       const res = await API.put(`/users/me`, { name, phone });
-      
+
       // Update local state with the saved data
       const updatedUser = res.data;
       setUser(updatedUser);
       setName(updatedUser.name);
       setPhone(updatedUser.phone || "");
-      
+
       showToast("success", "Profile updated successfully!");
     } catch (err: any) {
       console.error("Update Error:", err.response);
@@ -149,7 +149,12 @@ export default function UserPage() {
           <StatCard title="Active Projects" value={projects.length} icon={<Layers className="text-blue-400" />} color="blue" />
           <StatCard title="Role Status" value={user?.role} icon={<Shield className="text-emerald-400" />} color="emerald" />
           <StatCard title="Total Modules" value={projects.reduce((acc, p) => acc + (p.team?.length || 0), 0)} icon={<Award className="text-purple-400" />} color="purple" />
-          <StatCard title="Member Since" value={user ? new Date(user.createdAt).getFullYear() : "----"} icon={<Calendar className="text-orange-400" />} color="orange" />
+          <StatCard
+            title="Member Since"
+            value={user ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "----"}
+            icon={<Calendar className="text-orange-400" />}
+            color="orange"
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -271,9 +276,8 @@ export default function UserPage() {
 
       {/* TOAST */}
       {msg.text && (
-        <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in zoom-in slide-in-from-bottom-10 border z-110 ${
-          msg.type === "success" ? "bg-emerald-600 border-emerald-400 text-white" : "bg-red-600 border-red-400 text-white"
-        }`}>
+        <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in zoom-in slide-in-from-bottom-10 border z-110 ${msg.type === "success" ? "bg-emerald-600 border-emerald-400 text-white" : "bg-red-600 border-red-400 text-white"
+          }`}>
           {msg.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
           <span className="font-bold">{msg.text}</span>
         </div>
@@ -304,9 +308,8 @@ function StatCard({ title, value, icon, color }: any) {
 
 function TabBtn({ active, onClick, icon, label }: any) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl transition-all font-medium mb-1 cursor-pointer ${
-      active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
-    }`}>
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl transition-all font-medium mb-1 cursor-pointer ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+      }`}>
       {icon} {label}
     </button>
   );
@@ -322,10 +325,9 @@ function ProjectCard({ proj, userId, onOpenDetails }: any) {
         <div>
           <h4 className="text-2xl font-bold group-hover:text-blue-400 transition-colors mb-2">{proj.projectName}</h4>
           <div className="flex flex-wrap gap-2">
-            <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full ${
-              proj.status === 'Active' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-              proj.status === 'In Progress' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-gray-500/10 text-gray-400'
-            }`}>
+            <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full ${proj.status === 'Active' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                proj.status === 'In Progress' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-gray-500/10 text-gray-400'
+              }`}>
               {proj.status}
             </span>
             {isLead && <span className="text-[10px] font-bold uppercase px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 flex items-center gap-1"><Shield size={10} /> Team Lead</span>}

@@ -175,10 +175,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Footer Detail */}
-          <div className="mt-8 flex flex-col items-center gap-4">
-            <p className="text-[7px] font-mono text-gray-700 uppercase tracking-widest">
-              Secure Protocol Alpha-01
-            </p>
+          <div className="mt-8 flex flex-col items-center gap-4">            
             <button 
               onClick={() => router.push("/login")}
               className="text-[9px] font-black text-blue-500/60 hover:text-blue-400 uppercase tracking-[0.2em] transition-colors"

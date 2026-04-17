@@ -80,9 +80,9 @@ export default function CustomerList({ customers, onRefresh }: Props) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-black/40 text-[9px] uppercase tracking-[0.3em] text-gray-500 font-black">
-              <th className="px-8 py-6">Operative_Identity</th>
+              <th className="px-8 py-6">CLIENT NAME</th>
               <th className="px-6 py-6 hidden md:table-cell font-black">Organization</th>
-              <th className="px-6 py-6 hidden sm:table-cell font-black">Comms_Link</th>
+              <th className="px-6 py-6 hidden sm:table-cell font-black">E-MAIL</th>
               <th className="px-6 py-6 font-black text-center">Status</th>
               <th className="px-8 py-6 text-right font-black">Actions</th>
             </tr>
@@ -112,7 +112,7 @@ export default function CustomerList({ customers, onRefresh }: Props) {
                     <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                       c.status.toLowerCase() === 'active' 
                         ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' 
-                        : 'bg-gray-500/5 text-gray-500 border-white/5'
+                        : 'bg-red-500/5 text-red-500 border-red/5'
                     }`}>
                       {c.status}
                     </div>

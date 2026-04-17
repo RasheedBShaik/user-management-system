@@ -111,7 +111,7 @@ export default function CustomerModal({ customer, onClose, onRefresh }: any) {
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
                 >
                   <option value="active" className="bg-[#0f1115]">STATUS: ACTIVE</option>
-                  <option value="inactive" className="bg-[#0f1115]">STATUS: OFFLINE</option>
+                  <option value="inactive" className="bg-[#0f1115]">STATUS: INACTIVE</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></div>
               </div>

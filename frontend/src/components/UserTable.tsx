@@ -82,7 +82,7 @@ export default function UserTable({ users, onRefresh }: { users: User[], onRefre
             <Search size={14} className="text-gray-500 group-focus-within:text-blue-500 transition-colors" />
           </div>
           <input 
-            placeholder="FILTER BY IDENTITY..."
+            placeholder="SEARCH BY IDENTITY..."
             className="w-full bg-white/5 border border-white/10 pl-11 pr-4 py-4 rounded-2xl outline-none focus:border-blue-500/50 focus:bg-blue-500/5 font-mono text-[10px] tracking-[0.2em] transition-all placeholder:text-gray-600 shadow-2xl"
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -114,8 +114,8 @@ export default function UserTable({ users, onRefresh }: { users: User[], onRefre
               <thead>
                 <tr className="bg-white/2">
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Operative</th>
-                  <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Security_Clearance</th>
-                  <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Status_Control</th>
+                  <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Security Clearance</th>
+                  <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5">Status Control</th>
                   <th className="px-8 py-6 text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5 text-right">Protocol</th>
                 </tr>
               </thead>
