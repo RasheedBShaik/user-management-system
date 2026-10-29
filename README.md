@@ -37,7 +37,8 @@ The User Management System is a web application designed to provide separate acc
 - **MongoDB** — NoSQL database for application data
 
 ### Hosting
-- **Vercel** — Application deployment and hosting
+- **Vercel** — Frontend deployment and hosting
+- **Render** — Backend deployment and hosting
 
 ## 🌐 Live Demo
 
