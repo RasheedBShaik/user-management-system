@@ -107,9 +107,7 @@ export default function Home() {
         </div>
 
         {/* FOOTER */}
-        <footer className="mt-24 text-gray-600 text-sm font-medium">
-          Built with <span className="text-red-900/80">❤️</span> by the MERN Community
-        </footer>
+      
       </div>
     </div>
   );
